@@ -8,11 +8,22 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isLogin && password !== confirmPassword) {
+      toast({
+        title: "Erreur",
+        description: "Les mots de passe ne correspondent pas",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (userId && password) {
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("userId", userId);
@@ -67,6 +78,22 @@ const Auth = () => {
                 placeholder="••••••••"
               />
             </div>
+            {!isLogin && (
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                  Confirmer le mot de passe
+                </label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="mt-1"
+                  placeholder="••••••••"
+                />
+              </div>
+            )}
           </div>
 
           <Button type="submit" className="w-full">
