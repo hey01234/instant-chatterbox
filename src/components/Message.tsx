@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Trash2 } from "lucide-react";
+
 interface MessageProps {
   id: string;
   text: string;
