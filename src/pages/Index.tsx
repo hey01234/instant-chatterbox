@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ChatList from "../components/ChatList";
 import ChatWindow from "../components/ChatWindow";
+import { useState } from "react";
 
 const Index = () => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+    if (!isAuthenticated) {
+      navigate("/auth");
+    }
+  }, [navigate]);
 
   return (
     <div className="flex h-screen bg-white">
