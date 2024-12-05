@@ -6,17 +6,16 @@ import { useToast } from "@/components/ui/use-toast";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulation de connexion - à remplacer par une vraie authentification
-    if (email && password) {
+    if (userId && password) {
       localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userEmail", email);
+      localStorage.setItem("userId", userId);
       toast({
         title: isLogin ? "Connexion réussie" : "Inscription réussie",
         description: "Vous allez être redirigé vers la messagerie",
@@ -42,17 +41,16 @@ const Auth = () => {
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
+              <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
+                Identifiant
               </label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="userId"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
                 required
                 className="mt-1"
-                placeholder="vous@exemple.com"
+                placeholder="Votre identifiant"
               />
             </div>
             <div>
