@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Send } from "lucide-react";
+import { Send, Paperclip, Smile } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface MessageInputProps {
   onSendMessage: (text: string) => void;
@@ -17,21 +18,41 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-t">
+    <form onSubmit={handleSubmit} className="p-4 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center gap-2">
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="icon"
+          className="text-muted-foreground hover:text-foreground"
+          onClick={() => console.log("Attach file")}
+        >
+          <Paperclip className="h-5 w-5" />
+        </Button>
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Écrivez votre message..."
-          className="flex-1 p-2 rounded-full border focus:outline-none focus:border-primary"
+          className="flex-1 p-2 rounded-full border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
         />
-        <button
-          type="submit"
-          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white"
+        <Button 
+          type="button"
+          variant="ghost" 
+          size="icon"
+          className="text-muted-foreground hover:text-foreground"
+          onClick={() => console.log("Open emoji picker")}
         >
-          <Send className="w-5 h-5" />
-        </button>
+          <Smile className="h-5 w-5" />
+        </Button>
+        <Button
+          type="submit"
+          size="icon"
+          className="rounded-full bg-primary hover:bg-primary/90"
+          disabled={!message.trim()}
+        >
+          <Send className="h-5 w-5" />
+        </Button>
       </div>
     </form>
   );
