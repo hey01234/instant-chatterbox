@@ -7,11 +7,11 @@ import { useEffect } from "react";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Initialisation du thème au chargement de l'application
   useEffect(() => {
     const theme = localStorage.getItem("theme");
     if (theme === "dark") {
@@ -19,7 +19,6 @@ const App = () => {
     } else if (theme === "light") {
       document.documentElement.classList.remove("dark");
     } else {
-      // Par défaut, on utilise le thème clair
       localStorage.setItem("theme", "light");
       document.documentElement.classList.remove("dark");
     }
@@ -34,6 +33,7 @@ const App = () => {
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/" element={<Index />} />
           </Routes>
         </TooltipProvider>
