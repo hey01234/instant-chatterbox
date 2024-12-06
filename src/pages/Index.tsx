@@ -4,10 +4,17 @@ import ChatList from "../components/ChatList";
 import ChatWindow from "../components/ChatWindow";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Settings } from "lucide-react";
+import { Menu, MessageSquare, Settings, Sun, Moon, User, Bell } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(document.documentElement.classList.contains("dark"));
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,28 +24,61 @@ const Index = () => {
     }
   }, [navigate]);
 
+  const toggleTheme = () => {
+    document.documentElement.classList.toggle("dark");
+    setIsDarkMode(!isDarkMode);
+    localStorage.setItem("theme", isDarkMode ? "light" : "dark");
+  };
+
   return (
-    <div className="flex h-screen bg-white">
-      <div className={`border-r ${selectedChat ? 'hidden md:block' : ''} md:w-80`}>
-        <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="font-semibold">Messages</h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/settings")}
-            className="hover:bg-gray-100 rounded-full"
-          >
-            <Settings className="h-5 w-5" />
-          </Button>
+    <div className="flex h-screen bg-background">
+      <div className={`border-r border-border ${selectedChat ? 'hidden md:block' : ''} md:w-80 bg-background`}>
+        <div className="p-4 border-b border-border flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="h-5 w-5" />
+            </Button>
+            <h2 className="font-semibold text-foreground">Messages</h2>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="hover:bg-accent rounded-full">
+                <Settings className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onClick={() => navigate("/settings")}>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profil</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={toggleTheme}>
+                {isDarkMode ? (
+                  <Sun className="mr-2 h-4 w-4" />
+                ) : (
+                  <Moon className="mr-2 h-4 w-4" />
+                )}
+                <span>Thème {isDarkMode ? "clair" : "sombre"}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Bell className="mr-2 h-4 w-4" />
+                <span>Notifications</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <MessageSquare className="mr-2 h-4 w-4" />
+                <span>Chat</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <ChatList onSelectChat={setSelectedChat} selectedChat={selectedChat} />
       </div>
-      <div className={`flex-1 ${!selectedChat ? 'hidden md:block' : ''}`}>
+      <div className={`flex-1 ${!selectedChat ? 'hidden md:block' : ''} bg-background`}>
         {selectedChat ? (
           <ChatWindow chatId={selectedChat} onBack={() => setSelectedChat(null)} />
         ) : (
-          <div className="hidden md:flex h-full items-center justify-center text-gray-500">
-            Sélectionnez une conversation pour commencer
+          <div className="hidden md:flex h-full items-center justify-center text-muted-foreground flex-col gap-4">
+            <MessageSquare className="h-12 w-12" />
+            <p>Sélectionnez une conversation pour commencer</p>
           </div>
         )}
       </div>
