@@ -31,7 +31,7 @@ const Index = () => {
   };
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen w-screen overflow-hidden bg-background">
       <div className={`border-r border-border ${selectedChat ? 'hidden md:block' : ''} md:w-80 bg-background`}>
         <div className="p-4 border-b border-border flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -42,12 +42,17 @@ const Index = () => {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="hover:bg-accent rounded-full">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="hover:bg-accent rounded-full"
+                onClick={() => navigate("/settings")}
+              >
                 <Settings className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={() => navigate("/settings")}>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profil</span>
               </DropdownMenuItem>
