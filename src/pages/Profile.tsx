@@ -7,84 +7,85 @@ const Profile = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C] text-white">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="p-4 flex items-center justify-between">
+      <div className="p-4 flex items-center justify-between border-b border-border">
         <Button 
           variant="ghost" 
           size="icon"
           onClick={() => navigate(-1)}
-          className="text-white hover:bg-white/10"
+          className="hover:bg-accent"
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
+          <Button variant="ghost" size="icon" className="hover:bg-accent">
             <Edit className="h-6 w-6" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
+          <Button variant="ghost" size="icon" className="hover:bg-accent">
             <MoreVertical className="h-6 w-6" />
           </Button>
         </div>
       </div>
 
       {/* Profile Info */}
-      <div className="px-6 pb-6">
-        <div className="flex justify-between items-start">
-          <Avatar className="w-20 h-20 border-4 border-primary">
+      <div className="px-6 pb-6 max-w-2xl mx-auto">
+        <div className="flex justify-between items-start mt-8">
+          <Avatar className="w-24 h-24 border-4 border-primary">
             <AvatarImage src="/placeholder.svg" />
             <AvatarFallback>H</AvatarFallback>
           </Avatar>
           <Button 
-            variant="ghost" 
+            variant="secondary"
             size="icon" 
-            className="rounded-full bg-[#5EA5DE] hover:bg-[#5EA5DE]/90 text-white"
+            className="rounded-full bg-primary hover:bg-primary/90"
           >
             <Camera className="h-6 w-6" />
           </Button>
         </div>
         
-        <div className="mt-4">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+        <div className="mt-6">
+          <h1 className="text-3xl font-bold flex items-center gap-2 text-foreground">
             Hono
-            <span className="text-xl">🦴🍅⬛</span>
+            <span className="text-2xl">🦴🍅⬛</span>
           </h1>
-          <p className="text-[#5EA5DE]">online</p>
+          <p className="text-primary font-medium">En ligne</p>
         </div>
 
         {/* Info Section */}
-        <div className="mt-8">
-          <h2 className="text-xl text-[#5EA5DE] mb-4">Info</h2>
-          <div className="space-y-4">
-            <div>
-              <p className="text-white">+229 43313412</p>
-              <p className="text-gray-400 text-sm">Mobile</p>
-            </div>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-white">@Jose_0x</p>
-                <p className="text-gray-400 text-sm">Username</p>
+        <div className="mt-10 space-y-8">
+          <div className="bg-accent/50 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-primary mb-4">Informations</h2>
+            <div className="space-y-6">
+              <div className="bg-background rounded-lg p-4">
+                <p className="text-foreground font-medium">+229 43313412</p>
+                <p className="text-muted-foreground text-sm">Mobile</p>
               </div>
-              <Button variant="ghost" size="icon" className="text-[#5EA5DE]">
-                <QrCode className="h-6 w-6" />
-              </Button>
+              <div className="bg-background rounded-lg p-4 flex justify-between items-center">
+                <div>
+                  <p className="text-foreground font-medium">@Jose_0x</p>
+                  <p className="text-muted-foreground text-sm">Nom d'utilisateur</p>
+                </div>
+                <Button variant="ghost" size="icon" className="text-primary">
+                  <QrCode className="h-6 w-6" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Posts Section */}
         <div className="mt-8">
-          <div className="flex border-b border-gray-700">
-            <button className="flex-1 pb-2 text-[#5EA5DE] border-b-2 border-[#5EA5DE]">
-              Posts
+          <div className="flex border-b border-border">
+            <button className="flex-1 pb-2 text-primary border-b-2 border-primary font-medium">
+              Publications
             </button>
-            <button className="flex-1 pb-2 text-gray-400">
-              Archived Posts
+            <button className="flex-1 pb-2 text-muted-foreground">
+              Publications archivées
             </button>
           </div>
-          {/* Posts content would go here */}
-          <div className="mt-4 aspect-video bg-gray-800 rounded-lg">
-            {/* Placeholder for video/post content */}
+          <div className="mt-6 aspect-video bg-accent rounded-lg flex items-center justify-center">
+            <p className="text-muted-foreground">Aucune publication pour le moment</p>
           </div>
         </div>
       </div>
