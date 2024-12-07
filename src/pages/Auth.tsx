@@ -3,114 +3,103 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
+import { MessageSquare } from "lucide-react";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [userId, setUserId] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    identifier: "",
+    password: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!isLogin && password !== confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas",
-        variant: "destructive",
-      });
-      return;
-    }
+    setIsLoading(true);
 
-    if (userId && password) {
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userId", userId);
-      toast({
-        title: isLogin ? "Connexion réussie" : "Inscription réussie",
-        description: "Vous allez être redirigé vers la messagerie",
-      });
-      navigate("/");
-    }
+    // Simuler une vérification d'authentification
+    setTimeout(() => {
+      if (formData.identifier && formData.password) {
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("user", JSON.stringify({
+          id: "1",
+          name: "John Doe",
+          email: formData.identifier,
+        }));
+        navigate("/");
+        toast({
+          title: "Connexion réussie",
+          description: "Bienvenue sur l'application",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erreur de connexion",
+          description: "Identifiant ou mot de passe incorrect",
+        });
+      }
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md space-y-8 p-8 bg-white rounded-lg shadow">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">
-            {isLogin ? "Connexion" : "Inscription"}
-          </h2>
-          <p className="mt-2 text-gray-600">
-            {isLogin
-              ? "Connectez-vous à votre compte"
-              : "Créez votre compte pour commencer"}
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-full max-w-md space-y-8 p-8">
+        <div className="flex flex-col items-center gap-4">
+          <div className="rounded-full bg-primary/10 p-4">
+            <MessageSquare className="h-12 w-12 text-primary" />
+          </div>
+          <h2 className="text-3xl font-bold">Bienvenue</h2>
+          <p className="text-muted-foreground">
+            Connectez-vous pour accéder à votre compte
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
-            <div>
-              <label htmlFor="userId" className="block text-sm font-medium text-gray-700">
-                Identifiant
-              </label>
+            <div className="space-y-2">
               <Input
-                id="userId"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
+                id="identifier"
+                placeholder="Email ou identifiant"
+                type="text"
+                value={formData.identifier}
+                onChange={(e) =>
+                  setFormData({ ...formData, identifier: e.target.value })
+                }
                 required
-                className="mt-1"
-                placeholder="Votre identifiant"
               />
             </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Mot de passe
-              </label>
+            <div className="space-y-2">
               <Input
                 id="password"
+                placeholder="Mot de passe"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 required
-                className="mt-1"
-                placeholder="••••••••"
               />
             </div>
-            {!isLogin && (
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                  Confirmer le mot de passe
-                </label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  className="mt-1"
-                  placeholder="••••••••"
-                />
-              </div>
-            )}
           </div>
 
-          <Button type="submit" className="w-full">
-            {isLogin ? "Se connecter" : "S'inscrire"}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading}
+          >
+            {isLoading ? "Connexion en cours..." : "Se connecter"}
           </Button>
         </form>
 
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-primary hover:underline"
-          >
-            {isLogin
-              ? "Pas encore de compte ? S'inscrire"
-              : "Déjà un compte ? Se connecter"}
-          </button>
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Vous n'avez pas de compte ?{" "}
+            <Button variant="link" className="p-0" onClick={() => navigate("/register")}>
+              S'inscrire
+            </Button>
+          </p>
         </div>
       </div>
     </div>
