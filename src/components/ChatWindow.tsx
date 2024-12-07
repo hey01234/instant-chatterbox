@@ -1,10 +1,19 @@
 import { useState } from "react";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
-import { ArrowLeft, Settings, Phone, Video } from "lucide-react";
+import { ArrowLeft, Settings, Phone, Video, MoreVertical, Star, Archive, Delete, Ban, Flag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/components/ui/use-toast";
 
 interface ChatWindowProps {
   chatId: string;
@@ -28,6 +37,7 @@ const MOCK_MESSAGES = [
 const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
   const [messages, setMessages] = useState<MessageType[]>(MOCK_MESSAGES);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSendMessage = (text: string) => {
     const newMessage = {
@@ -55,6 +65,42 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
     }));
   };
 
+  const handleArchiveChat = () => {
+    toast({
+      title: "Chat archivé",
+      description: "Cette conversation a été archivée"
+    });
+  };
+
+  const handleStarMessage = () => {
+    toast({
+      title: "Message enregistré",
+      description: "Le message a été ajouté aux favoris"
+    });
+  };
+
+  const handleBlockUser = () => {
+    toast({
+      title: "Utilisateur bloqué",
+      description: "Vous avez bloqué cet utilisateur"
+    });
+  };
+
+  const handleReportUser = () => {
+    toast({
+      title: "Utilisateur signalé",
+      description: "Votre signalement a été envoyé"
+    });
+  };
+
+  const handleDeleteChat = () => {
+    toast({
+      title: "Chat supprimé",
+      description: "Cette conversation a été supprimée"
+    });
+    navigate("/");
+  };
+
   return (
     <div className="h-full flex flex-col bg-background">
       <div className="p-4 border-b border-border flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -80,9 +126,37 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
           <Button variant="ghost" size="icon" onClick={() => console.log("Phone call")}>
             <Phone className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
-            <Settings className="h-5 w-5" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={handleStarMessage}>
+                <Star className="mr-2 h-4 w-4" />
+                <span>Enregistrer les messages</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleArchiveChat}>
+                <Archive className="mr-2 h-4 w-4" />
+                <span>Archiver la conversation</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleBlockUser} className="text-red-600">
+                <Ban className="mr-2 h-4 w-4" />
+                <span>Bloquer l'utilisateur</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleReportUser} className="text-yellow-600">
+                <Flag className="mr-2 h-4 w-4" />
+                <span>Signaler l'utilisateur</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDeleteChat} className="text-red-600">
+                <Delete className="mr-2 h-4 w-4" />
+                <span>Supprimer la conversation</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
