@@ -48,7 +48,7 @@ const Contacts = () => {
             <div
               key={contact.id}
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent cursor-pointer"
-              onClick={() => navigate(`/chat/${contact.id}`)}
+              onClick={() => navigate(`/profile/${contact.id}`)}
             >
               <Avatar>
                 <AvatarImage src={contact.avatar} />

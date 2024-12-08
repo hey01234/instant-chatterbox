@@ -9,7 +9,6 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -34,7 +33,9 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
       localStorage.setItem("user", JSON.stringify({
         id: "1",
         username: formData.username,
-        email: formData.email,
+        name: "Jack",
+        phone: "",
+        description: "",
       }));
       
       toast({
@@ -64,23 +65,11 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
           <div className="space-y-2">
             <Input
               id="username"
-              placeholder="Nom d'utilisateur"
+              placeholder="Identifiant"
               type="text"
               value={formData.username}
               onChange={(e) =>
                 setFormData({ ...formData, username: e.target.value })
-              }
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Input
-              id="email"
-              placeholder="Email"
-              type="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
               }
               required
             />
