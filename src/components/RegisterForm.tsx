@@ -27,25 +27,53 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
       return;
     }
 
-    // Simuler l'inscription
-    setTimeout(() => {
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("user", JSON.stringify({
-        id: "1",
-        username: formData.username,
-        name: "Jack",
-        phone: "",
-        description: "",
-      }));
-      
+    // Vérifier si l'utilisateur existe déjà
+    const existingUsers = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith("user_")) {
+        try {
+          const userData = JSON.parse(localStorage.getItem(key) || "");
+          existingUsers.push(userData);
+        } catch (e) {
+          console.error("Erreur lors de la lecture des données utilisateur:", e);
+        }
+      }
+    }
+
+    const userExists = existingUsers.some(user => user.username === formData.username);
+    if (userExists) {
       toast({
-        title: "Inscription réussie",
-        description: "Bienvenue sur l'application",
+        variant: "destructive",
+        title: "Erreur",
+        description: "Cet identifiant est déjà utilisé",
       });
-      
-      window.location.href = "/";
       setIsLoading(false);
-    }, 1000);
+      return;
+    }
+
+    // Créer un nouvel utilisateur
+    const userId = `${Date.now()}`;
+    const newUser = {
+      id: userId,
+      username: formData.username,
+      name: "Jack",
+      phone: "",
+      description: "",
+    };
+
+    // Sauvegarder l'utilisateur
+    localStorage.setItem(`user_${userId}`, JSON.stringify(newUser));
+    localStorage.setItem("isAuthenticated", "true");
+    localStorage.setItem("user", JSON.stringify(newUser));
+      
+    toast({
+      title: "Inscription réussie",
+      description: "Bienvenue sur l'application",
+    });
+      
+    window.location.href = "/";
+    setIsLoading(false);
   };
 
   return (

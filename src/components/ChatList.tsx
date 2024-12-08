@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Search, Plus } from "lucide-react";
@@ -8,34 +9,42 @@ interface ChatListProps {
   selectedChat: string | null;
 }
 
-const MOCK_CHATS = [
-  { 
-    id: "1", 
-    name: "Alice Martin", 
-    lastMessage: "Salut ! Comment ça va ?", 
-    online: true,
-    timestamp: "14:30",
-    unread: 2
-  },
-  { 
-    id: "2", 
-    name: "Thomas Bernard", 
-    lastMessage: "On se voit demain ?", 
-    online: false,
-    timestamp: "Hier",
-    unread: 0
-  },
-  { 
-    id: "3", 
-    name: "Marie Dubois", 
-    lastMessage: "Super, merci !", 
-    online: true,
-    timestamp: "Lun",
-    unread: 0
-  },
-];
+interface User {
+  id: string;
+  username: string;
+  name: string;
+}
 
 const ChatList = ({ onSelectChat, selectedChat }: ChatListProps) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    // Récupérer tous les utilisateurs enregistrés du localStorage
+    const allUsers = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith("user_")) {
+        try {
+          const userData = JSON.parse(localStorage.getItem(key) || "");
+          allUsers.push(userData);
+        } catch (e) {
+          console.error("Erreur lors de la lecture des données utilisateur:", e);
+        }
+      }
+    }
+    
+    // Filtrer l'utilisateur actuel
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const otherUsers = allUsers.filter(user => user.id !== currentUser.id);
+    setUsers(otherUsers);
+  }, []);
+
+  const filteredUsers = users.filter(user =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="h-full flex flex-col bg-background">
       <div className="p-4 border-b border-border">
@@ -50,38 +59,34 @@ const ChatList = ({ onSelectChat, selectedChat }: ChatListProps) => {
           <input
             type="text"
             placeholder="Rechercher..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-full border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {MOCK_CHATS.map((chat) => (
+        {filteredUsers.map((user) => (
           <div
-            key={chat.id}
-            onClick={() => onSelectChat(chat.id)}
+            key={user.id}
+            onClick={() => onSelectChat(user.id)}
             className={`p-4 flex items-center gap-3 hover:bg-accent cursor-pointer transition-colors ${
-              selectedChat === chat.id ? "bg-accent" : ""
+              selectedChat === user.id ? "bg-accent" : ""
             }`}
           >
             <div className="relative">
               <Avatar>
                 <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>{chat.name.charAt(0)}</AvatarFallback>
+                <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
               </Avatar>
-              <OnlineStatus online={chat.online} />
+              <OnlineStatus online={false} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex justify-between items-baseline">
-                <h3 className="font-medium truncate">{chat.name}</h3>
-                <span className="text-xs text-muted-foreground">{chat.timestamp}</span>
+                <h3 className="font-medium truncate">{user.username}</h3>
               </div>
               <div className="flex justify-between items-center">
-                <p className="text-sm text-muted-foreground truncate">{chat.lastMessage}</p>
-                {chat.unread > 0 && (
-                  <span className="ml-2 px-2 py-0.5 bg-primary text-white text-xs rounded-full">
-                    {chat.unread}
-                  </span>
-                )}
+                <p className="text-sm text-muted-foreground truncate">{user.name}</p>
               </div>
             </div>
           </div>
