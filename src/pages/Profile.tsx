@@ -45,7 +45,7 @@ const Profile = () => {
         id: userId,
         username: "utilisateur",
         name: "Jack",
-        phone: "+33 6 12 34 56 78",
+        phone: "+...",
         description: "Description de l'utilisateur",
         avatar: "/placeholder.svg",
         online: true,
