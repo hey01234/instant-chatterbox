@@ -29,9 +29,9 @@ interface MessageType {
 }
 
 const MOCK_MESSAGES = [
-  { id: "1", text: "Salut ! Comment ça va ?", sent: false, timestamp: "09:30" },
-  { id: "2", text: "Très bien merci, et toi ?", sent: true, timestamp: "09:31" },
-  { id: "3", text: "Super ! Tu fais quoi ce weekend ?", sent: false, timestamp: "09:32" },
+  { id: "1", text: "", sent: false, timestamp: "" },
+  { id: "2", text: "", sent: true, timestamp: "" },
+  { id: "3", text: "", sent: false, timestamp: "" },
 ];
 
 const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
