@@ -26,7 +26,7 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
         localStorage.setItem("user", JSON.stringify({
           id: "1",
           username: formData.identifier,
-          email: formData.identifier,
+        
         }));
         navigate("/");
         toast({
@@ -61,7 +61,7 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
           <div className="space-y-2">
             <Input
               id="identifier"
-              placeholder="Email ou identifiant"
+              placeholder="Identifiant"
               type="text"
               value={formData.identifier}
               onChange={(e) =>
