@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { MessageSquare } from "lucide-react";
+import RegisterForm from "@/components/RegisterForm";
 
-const Auth = () => {
+const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,7 @@ const Auth = () => {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("user", JSON.stringify({
           id: "1",
-          name: "John Doe",
+          username: formData.identifier,
           email: formData.identifier,
         }));
         navigate("/");
@@ -44,64 +45,80 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md space-y-8 p-8">
-        <div className="flex flex-col items-center gap-4">
-          <div className="rounded-full bg-primary/10 p-4">
-            <MessageSquare className="h-12 w-12 text-primary" />
-          </div>
-          <h2 className="text-3xl font-bold">Bienvenue</h2>
-          <p className="text-muted-foreground">
-            Connectez-vous pour accéder à votre compte
-          </p>
+    <div className="w-full max-w-md space-y-8 p-8">
+      <div className="flex flex-col items-center gap-4">
+        <div className="rounded-full bg-primary/10 p-4">
+          <MessageSquare className="h-12 w-12 text-primary" />
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                id="identifier"
-                placeholder="Email ou identifiant"
-                type="text"
-                value={formData.identifier}
-                onChange={(e) =>
-                  setFormData({ ...formData, identifier: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Input
-                id="password"
-                placeholder="Mot de passe"
-                type="password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                required
-              />
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? "Connexion en cours..." : "Se connecter"}
-          </Button>
-        </form>
-
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            Vous n'avez pas de compte ?{" "}
-            <Button variant="link" className="p-0" onClick={() => navigate("/register")}>
-              S'inscrire
-            </Button>
-          </p>
-        </div>
+        <h2 className="text-3xl font-bold">Bienvenue</h2>
+        <p className="text-muted-foreground">
+          Connectez-vous pour accéder à votre compte
+        </p>
       </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              id="identifier"
+              placeholder="Email ou identifiant"
+              type="text"
+              value={formData.identifier}
+              onChange={(e) =>
+                setFormData({ ...formData, identifier: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Input
+              id="password"
+              placeholder="Mot de passe"
+              type="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              required
+            />
+          </div>
+        </div>
+
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={isLoading}
+        >
+          {isLoading ? "Connexion en cours..." : "Se connecter"}
+        </Button>
+      </form>
+
+      <div className="text-center">
+        <p className="text-sm text-muted-foreground">
+          Vous n'avez pas de compte ?{" "}
+          <Button variant="link" className="p-0" onClick={onToggle}>
+            S'inscrire
+          </Button>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const Auth = () => {
+  const [isLogin, setIsLogin] = useState(true);
+
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      {isLogin ? (
+        <LoginForm onToggle={toggleForm} />
+      ) : (
+        <RegisterForm onToggle={toggleForm} />
+      )}
     </div>
   );
 };
