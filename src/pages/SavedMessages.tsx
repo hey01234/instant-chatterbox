@@ -1,111 +1,93 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Message from "@/components/Message";
+import MessageInput from "@/components/MessageInput";
 import { useToast } from "@/components/ui/use-toast";
-import { Textarea } from "@/components/ui/textarea";
 
 interface SavedMessage {
   id: string;
   text: string;
-  timestamp: string;
+  timestamp: number;
 }
 
 const SavedMessages = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [messages, setMessages] = useState<SavedMessage[]>([]);
-  const [newMessage, setNewMessage] = useState("");
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
-    const savedMessages = localStorage.getItem("savedMessages");
+    const savedMessages = localStorage.getItem(`saved_messages_${currentUser.id}`);
     if (savedMessages) {
       setMessages(JSON.parse(savedMessages));
     }
-  }, []);
+  }, [currentUser.id]);
 
-  const handleSaveMessage = () => {
-    if (!newMessage.trim()) return;
-
-    const message = {
+  const handleSendMessage = (text: string) => {
+    const newMessage = {
       id: Date.now().toString(),
-      text: newMessage,
-      timestamp: new Date().toLocaleString(),
+      text,
+      timestamp: Date.now(),
     };
 
-    const updatedMessages = [...messages, message];
+    const updatedMessages = [...messages, newMessage];
     setMessages(updatedMessages);
-    localStorage.setItem("savedMessages", JSON.stringify(updatedMessages));
-    setNewMessage("");
+    localStorage.setItem(
+      `saved_messages_${currentUser.id}`,
+      JSON.stringify(updatedMessages)
+    );
 
     toast({
-      title: "Message enregistré",
-      description: "Le message a été ajouté aux favoris",
+      title: "Message sauvegardé",
+      description: "Votre message a été enregistré avec succès",
     });
   };
 
-  const handleDeleteMessage = (id: string) => {
-    const updatedMessages = messages.filter((msg) => msg.id !== id);
+  const handleDeleteMessage = (messageId: string) => {
+    const updatedMessages = messages.filter((msg) => msg.id !== messageId);
     setMessages(updatedMessages);
-    localStorage.setItem("savedMessages", JSON.stringify(updatedMessages));
+    localStorage.setItem(
+      `saved_messages_${currentUser.id}`,
+      JSON.stringify(updatedMessages)
+    );
 
     toast({
       title: "Message supprimé",
-      description: "Le message a été retiré des favoris",
+      description: "Le message a été supprimé avec succès",
     });
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="p-4 border-b border-border flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-xl font-semibold">Messages enregistrés</h1>
-        </div>
+    <div className="flex flex-col h-screen bg-background">
+      <div className="p-4 border-b border-border flex items-center gap-3">
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-xl font-semibold">Messages sauvegardés</h1>
       </div>
 
-      <div className="p-4 space-y-4">
-        <div className="space-y-2">
-          <Textarea
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Écrivez un nouveau message à sauvegarder..."
-            className="min-h-[100px]"
-          />
-          <Button
-            onClick={handleSaveMessage}
-            className="w-full"
-            disabled={!newMessage.trim()}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter un message
-          </Button>
-        </div>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            Aucun message sauvegardé
+          </div>
+        ) : (
+          messages.map((message) => (
+            <Message
+              key={message.id}
+              id={message.id}
+              text={message.text}
+              sent={true}
+              onDelete={handleDeleteMessage}
+            />
+          ))
+        )}
+      </div>
 
-        <div className="space-y-4 mt-8">
-          {messages.map((message) => (
-            <div key={message.id} className="relative group">
-              <Message
-                id={message.id}
-                text={message.text}
-                sent={true}
-                onDelete={handleDeleteMessage}
-              />
-              <span className="text-xs text-muted-foreground absolute -bottom-5 right-0">
-                {message.timestamp}
-              </span>
-            </div>
-          ))}
-          
-          {messages.length === 0 && (
-            <div className="text-center text-muted-foreground py-8">
-              Aucun message enregistré
-            </div>
-          )}
-        </div>
+      <div className="p-4 border-t border-border">
+        <MessageInput onSend={handleSendMessage} />
       </div>
     </div>
   );
