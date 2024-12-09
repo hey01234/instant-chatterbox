@@ -86,9 +86,7 @@ const SavedMessages = () => {
         )}
       </div>
 
-      <div className="p-4 border-t border-border">
-        <MessageInput onSend={handleSendMessage} />
-      </div>
+      <MessageInput onSendMessage={handleSendMessage} />
     </div>
   );
 };
