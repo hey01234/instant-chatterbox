@@ -5,16 +5,17 @@ interface MessageProps {
   id: string;
   text: string;
   sent: boolean;
+  timestamp: number;
   onDelete?: (id: string) => void;
   onReact?: (id: string, reaction: string) => void;
 }
 
-const Message = ({ id, text, sent, onDelete, onReact }: MessageProps) => {
+const Message = ({ id, text, sent, timestamp, onDelete, onReact }: MessageProps) => {
   const reactions = ["👍", "❤️", "😂", "😮", "😢", "😡"];
   const [showActions, setShowActions] = useState(false);
 
   return (
-    <div className={`flex ${sent ? "justify-end" : "justify-start"} group`}>
+    <div className={`flex ${sent ? "justify-end" : "justify-start"} group mb-4`}>
       <div className="relative max-w-[80%]">
         <div
           className={`p-3 rounded-2xl animate-message-in shadow-sm ${
@@ -24,6 +25,9 @@ const Message = ({ id, text, sent, onDelete, onReact }: MessageProps) => {
           onMouseLeave={() => setShowActions(false)}
         >
           <p className="text-sm break-words">{text}</p>
+          <span className="text-xs text-muted-foreground mt-1 block">
+            {new Date(timestamp).toLocaleTimeString()}
+          </span>
           
           {showActions && sent && (
             <button
