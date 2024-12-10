@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
+import { getMessages, sendMessage } from "@/utils/api";
 
 interface ChatWindowProps {
   chatId: string;
@@ -34,32 +35,58 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Charger l'utilisateur du chat
+    const fetchMessages = async () => {
+      try {
+        const fetchedMessages = await getMessages(chatId);
+        const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+        
+        const formattedMessages = fetchedMessages.map(msg => ({
+          id: msg.id,
+          text: msg.text,
+          sent: msg.senderId === currentUser.id,
+          timestamp: msg.timestamp
+        }));
+        
+        setMessages(formattedMessages);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de charger les messages",
+        });
+      }
+    };
+
     const userData = localStorage.getItem(`user_${chatId}`);
     if (userData) {
       setChatUser(JSON.parse(userData));
     }
 
-    // Charger les messages
-    const chatMessages = localStorage.getItem(`messages_${chatId}`);
-    if (chatMessages) {
-      setMessages(JSON.parse(chatMessages));
-    }
-  }, [chatId]);
+    fetchMessages();
+  }, [chatId, toast]);
 
-  const handleSendMessage = (text: string) => {
-    const newMessage = {
-      id: Date.now().toString(),
-      text,
-      sent: true,
-      timestamp: Date.now()
-    };
-    
-    const updatedMessages = [...messages, newMessage];
-    setMessages(updatedMessages);
-    
-    // Sauvegarder les messages
-    localStorage.setItem(`messages_${chatId}`, JSON.stringify(updatedMessages));
+  const handleSendMessage = async (text: string) => {
+    try {
+      const response = await sendMessage({
+        receiverId: chatId,
+        text: text
+      });
+
+      const newMessage = {
+        id: response.id,
+        text,
+        sent: true,
+        timestamp: Date.now()
+      };
+      
+      setMessages(prev => [...prev, newMessage]);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible d'envoyer le message",
+      });
+    }
   };
 
   const handleDeleteMessage = (messageId: string) => {

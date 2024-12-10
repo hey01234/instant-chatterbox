@@ -3,6 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Search, Plus } from "lucide-react";
 import OnlineStatus from "./OnlineStatus";
+import { getUsers } from "@/utils/api";
+import { useToast } from "./ui/use-toast";
 
 interface ChatListProps {
   onSelectChat: (chatId: string) => void;
@@ -18,27 +20,26 @@ interface User {
 const ChatList = ({ onSelectChat, selectedChat }: ChatListProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Récupérer tous les utilisateurs enregistrés du localStorage
-    const allUsers = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith("user_")) {
-        try {
-          const userData = JSON.parse(localStorage.getItem(key) || "");
-          allUsers.push(userData);
-        } catch (e) {
-          console.error("Erreur lors de la lecture des données utilisateur:", e);
-        }
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await getUsers();
+        const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const otherUsers = fetchedUsers.filter(user => user.id !== currentUser.id);
+        setUsers(otherUsers);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de charger les utilisateurs",
+        });
       }
-    }
-    
-    // Filtrer l'utilisateur actuel
-    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const otherUsers = allUsers.filter(user => user.id !== currentUser.id);
-    setUsers(otherUsers);
-  }, []);
+    };
+
+    fetchUsers();
+  }, [toast]);
 
   const filteredUsers = users.filter(user =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||

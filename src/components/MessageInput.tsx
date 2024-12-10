@@ -1,30 +1,18 @@
 import { useState } from "react";
 import { Send, Paperclip, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { saveMessage } from "@/utils/messageStorage";
 
 interface MessageInputProps {
   onSendMessage: (text: string) => void;
   receiverId?: string;
 }
 
-const MessageInput = ({ onSendMessage, receiverId }: MessageInputProps) => {
+const MessageInput = ({ onSendMessage }: MessageInputProps) => {
   const [message, setMessage] = useState("");
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
-      if (receiverId) {
-        const newMessage = {
-          id: Date.now().toString(),
-          senderId: currentUser.id,
-          receiverId,
-          text: message,
-          timestamp: Date.now(),
-        };
-        saveMessage(newMessage);
-      }
       onSendMessage(message);
       setMessage("");
     }
