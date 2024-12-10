@@ -66,31 +66,37 @@ const ChatList = ({ onSelectChat, selectedChat }: ChatListProps) => {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {filteredUsers.map((user) => (
-          <div
-            key={user.id}
-            onClick={() => onSelectChat(user.id)}
-            className={`p-4 flex items-center gap-3 hover:bg-accent cursor-pointer transition-colors ${
-              selectedChat === user.id ? "bg-accent" : ""
-            }`}
-          >
-            <div className="relative">
-              <Avatar>
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <OnlineStatus online={false} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-baseline">
-                <h3 className="font-medium truncate">{user.username}</h3>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-muted-foreground truncate">{user.name}</p>
-              </div>
-            </div>
+        {filteredUsers.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            Aucun utilisateur trouvé
           </div>
-        ))}
+        ) : (
+          filteredUsers.map((user) => (
+            <div
+              key={user.id}
+              onClick={() => onSelectChat(user.id)}
+              className={`p-4 flex items-center gap-3 hover:bg-accent cursor-pointer transition-colors ${
+                selectedChat === user.id ? "bg-accent" : ""
+              }`}
+            >
+              <div className="relative">
+                <Avatar>
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <OnlineStatus online={false} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-baseline">
+                  <h3 className="font-medium truncate">{user.username}</h3>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-muted-foreground truncate">{user.name}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

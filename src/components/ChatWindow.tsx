@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
 import { ArrowLeft, Settings, Phone, Video, MoreVertical, Star, Archive, Delete, Ban, Flag } from "lucide-react";
@@ -24,20 +24,28 @@ interface MessageType {
   id: string;
   text: string;
   sent: boolean;
-  reactions?: string[];
-  timestamp?: string;
+  timestamp: string;
 }
 
-const MOCK_MESSAGES = [
-  { id: "1", text: "", sent: false, timestamp: "" },
-  { id: "2", text: "", sent: true, timestamp: "" },
-  { id: "3", text: "", sent: false, timestamp: "" },
-];
-
 const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
-  const [messages, setMessages] = useState<MessageType[]>(MOCK_MESSAGES);
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [chatUser, setChatUser] = useState<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Charger l'utilisateur du chat
+    const userData = localStorage.getItem(`user_${chatId}`);
+    if (userData) {
+      setChatUser(JSON.parse(userData));
+    }
+
+    // Charger les messages
+    const chatMessages = localStorage.getItem(`messages_${chatId}`);
+    if (chatMessages) {
+      setMessages(JSON.parse(chatMessages));
+    }
+  }, [chatId]);
 
   const handleSendMessage = (text: string) => {
     const newMessage = {
@@ -46,23 +54,18 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
       sent: true,
       timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
     };
-    setMessages([...messages, newMessage]);
+    
+    const updatedMessages = [...messages, newMessage];
+    setMessages(updatedMessages);
+    
+    // Sauvegarder les messages
+    localStorage.setItem(`messages_${chatId}`, JSON.stringify(updatedMessages));
   };
 
   const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((msg) => msg.id !== messageId));
-  };
-
-  const handleReactToMessage = (messageId: string, reaction: string) => {
-    setMessages(messages.map((msg) => {
-      if (msg.id === messageId) {
-        return {
-          ...msg,
-          reactions: [...(msg.reactions || []), reaction]
-        };
-      }
-      return msg;
-    }));
+    const updatedMessages = messages.filter((msg) => msg.id !== messageId);
+    setMessages(updatedMessages);
+    localStorage.setItem(`messages_${chatId}`, JSON.stringify(updatedMessages));
   };
 
   const handleArchiveChat = () => {
@@ -94,6 +97,7 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
   };
 
   const handleDeleteChat = () => {
+    localStorage.removeItem(`messages_${chatId}`);
     toast({
       title: "Chat supprimé",
       description: "Cette conversation a été supprimée"
@@ -101,9 +105,11 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
     navigate("/");
   };
 
+  if (!chatUser) return null;
+
   return (
     <div className="h-full flex flex-col bg-background">
-      <div className="p-4 border-b border-border flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="p-4 border-b border-border flex items-center justify-between bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
         <div className="flex items-center gap-4">
           <button onClick={onBack} className="md:hidden">
             <ArrowLeft className="w-6 h-6" />
@@ -111,19 +117,19 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
               <AvatarImage src="/placeholder.svg" />
-              <AvatarFallback>A</AvatarFallback>
+              <AvatarFallback>{chatUser.username?.[0].toUpperCase()}</AvatarFallback>
             </Avatar>
             <div>
-              <h2 className="font-medium">Alice Martin</h2>
+              <h2 className="font-medium">{chatUser.username}</h2>
               <span className="text-sm text-green-500">En ligne</span>
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={() => console.log("Video call")}>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <Video className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => console.log("Phone call")}>
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <Phone className="h-5 w-5" />
           </Button>
           <DropdownMenu>
@@ -160,14 +166,19 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <Message
-            key={message.id}
-            {...message}
-            onDelete={handleDeleteMessage}
-            onReact={handleReactToMessage}
-          />
-        ))}
+        {messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            Aucun message. Commencez la conversation !
+          </div>
+        ) : (
+          messages.map((message) => (
+            <Message
+              key={message.id}
+              {...message}
+              onDelete={handleDeleteMessage}
+            />
+          ))
+        )}
       </div>
       <MessageInput onSendMessage={handleSendMessage} />
     </div>

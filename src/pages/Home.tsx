@@ -7,10 +7,14 @@ const Home = () => {
 
   return (
     <div className="flex h-full">
-      <div className={`border-r border-border ${selectedChat ? 'hidden md:block' : ''} md:w-80`}>
+      <div className={`${
+        selectedChat ? 'hidden md:block' : 'w-full'
+      } md:w-80 border-r border-border`}>
         <ChatList onSelectChat={setSelectedChat} selectedChat={selectedChat} />
       </div>
-      <div className={`flex-1 ${!selectedChat ? 'hidden md:block' : ''}`}>
+      <div className={`${
+        !selectedChat ? 'hidden md:flex' : 'w-full'
+      } md:flex-1 bg-background`}>
         {selectedChat ? (
           <ChatWindow chatId={selectedChat} onBack={() => setSelectedChat(null)} />
         ) : (
