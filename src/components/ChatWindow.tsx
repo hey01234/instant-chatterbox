@@ -24,7 +24,7 @@ interface MessageType {
   id: string;
   text: string;
   sent: boolean;
-  timestamp: string;
+  timestamp: number;
 }
 
 const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
@@ -52,7 +52,7 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
       id: Date.now().toString(),
       text,
       sent: true,
-      timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+      timestamp: Date.now()
     };
     
     const updatedMessages = [...messages, newMessage];
@@ -180,7 +180,7 @@ const ChatWindow = ({ chatId, onBack }: ChatWindowProps) => {
           ))
         )}
       </div>
-      <MessageInput onSendMessage={handleSendMessage} />
+      <MessageInput onSendMessage={handleSendMessage} receiverId={chatId} />
     </div>
   );
 };

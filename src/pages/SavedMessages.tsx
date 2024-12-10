@@ -80,6 +80,7 @@ const SavedMessages = () => {
               id={message.id}
               text={message.text}
               sent={true}
+              timestamp={message.timestamp}
               onDelete={handleDeleteMessage}
             />
           ))
