@@ -1,10 +1,11 @@
+import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { MessageSquare } from "lucide-react";
-import RegisterForm from "@/components/RegisterForm";
+import RegisterForm from "@/components/auth/RegisterForm";
 
 const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   const navigate = useNavigate();
