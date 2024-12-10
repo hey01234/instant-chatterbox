@@ -15,15 +15,15 @@ const Message = ({ id, text, sent, onDelete, onReact }: MessageProps) => {
 
   return (
     <div className={`flex ${sent ? "justify-end" : "justify-start"} group`}>
-      <div className="relative">
+      <div className="relative max-w-[80%]">
         <div
-          className={`max-w-[70%] p-3 rounded-2xl animate-message-in ${
+          className={`p-3 rounded-2xl animate-message-in shadow-sm ${
             sent ? "bg-chat-sent" : "bg-chat-received"
           }`}
           onMouseEnter={() => setShowActions(true)}
           onMouseLeave={() => setShowActions(false)}
         >
-          <p className="text-sm">{text}</p>
+          <p className="text-sm break-words">{text}</p>
           
           {showActions && sent && (
             <button
@@ -35,7 +35,7 @@ const Message = ({ id, text, sent, onDelete, onReact }: MessageProps) => {
           )}
           
           {showActions && (
-            <div className="absolute -bottom-8 left-0 flex gap-1 bg-white rounded-full shadow-lg p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute -bottom-8 left-0 flex gap-1 bg-background rounded-full shadow-lg p-1 opacity-0 group-hover:opacity-100 transition-opacity">
               {reactions.map((reaction) => (
                 <button
                   key={reaction}
