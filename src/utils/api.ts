@@ -14,12 +14,18 @@ interface Message {
   timestamp: number;
 }
 
+const headers = {
+  'Content-Type': 'application/json',
+  'Accept': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 export const registerUser = async (userData: { username: string; password: string }) => {
   const response = await fetch(`${API_URL}register`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify(userData),
   });
   
@@ -33,9 +39,7 @@ export const registerUser = async (userData: { username: string; password: strin
 export const loginUser = async (credentials: { username: string; password: string }) => {
   const response = await fetch(`${API_URL}login`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify(credentials),
   });
   
@@ -49,6 +53,7 @@ export const loginUser = async (credentials: { username: string; password: strin
 export const getUsers = async () => {
   const response = await fetch(`${API_URL}users`, {
     headers: {
+      ...headers,
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
   });
@@ -64,7 +69,7 @@ export const sendMessage = async (message: { receiverId: string; text: string })
   const response = await fetch(`${API_URL}messages`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      ...headers,
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
     body: JSON.stringify(message),
@@ -80,6 +85,7 @@ export const sendMessage = async (message: { receiverId: string; text: string })
 export const getMessages = async (receiverId: string) => {
   const response = await fetch(`${API_URL}messages/${receiverId}`, {
     headers: {
+      ...headers,
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
   });
