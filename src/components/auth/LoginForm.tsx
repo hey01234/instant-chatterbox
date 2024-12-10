@@ -70,32 +70,28 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Input
-              id="identifier"
-              placeholder="Identifiant"
-              type="text"
-              value={formData.identifier}
-              onChange={(e) =>
-                setFormData({ ...formData, identifier: e.target.value })
-              }
-              required
-              className="bg-background/50 border-input"
-            />
-          </div>
-          <div className="space-y-2">
-            <Input
-              id="password"
-              placeholder="Mot de passe"
-              type="password"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              required
-              className="bg-background/50 border-input"
-            />
-          </div>
+          <Input
+            id="identifier"
+            placeholder="Identifiant"
+            type="text"
+            value={formData.identifier}
+            onChange={(e) =>
+              setFormData({ ...formData, identifier: e.target.value })
+            }
+            required
+            className="bg-background/50 border-input"
+          />
+          <Input
+            id="password"
+            placeholder="Mot de passe"
+            type="password"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            required
+            className="bg-background/50 border-input"
+          />
         </div>
 
         <Button

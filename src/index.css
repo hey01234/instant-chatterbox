@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --background: 240 5% 96%;
+    --background: 240 20% 98%;
     --foreground: 240 10% 3.9%;
-    --card: 0 0% 98%;
+    --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 98%;
+    --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
     --primary: 262 83% 58%;
     --primary-foreground: 0 0% 98%;
@@ -62,7 +62,6 @@
     color-scheme: dark;
   }
 
-  /* Amélioration de la lisibilité des messages en mode sombre */
   .dark .bg-chat-sent {
     @apply bg-blue-900/50 text-gray-100;
   }
@@ -71,7 +70,6 @@
     @apply bg-gray-800/80 text-gray-100;
   }
 
-  /* Amélioration des contrastes généraux en mode sombre */
   .dark .text-muted-foreground {
     @apply text-gray-300;
   }

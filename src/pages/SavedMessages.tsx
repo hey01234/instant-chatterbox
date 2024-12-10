@@ -60,7 +60,7 @@ const SavedMessages = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border flex items-center gap-3">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-5 w-5" />
@@ -80,6 +80,7 @@ const SavedMessages = () => {
               id={message.id}
               text={message.text}
               sent={true}
+              timestamp={message.timestamp}
               onDelete={handleDeleteMessage}
             />
           ))

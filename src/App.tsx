@@ -10,12 +10,13 @@ import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import Contacts from "./pages/Contacts";
 import SavedMessages from "./pages/SavedMessages";
+import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  return isAuthenticated ? children : <Navigate to="/auth" />;
+  return isAuthenticated ? <Layout>{children}</Layout> : <Navigate to="/auth" />;
 };
 
 const App = () => {

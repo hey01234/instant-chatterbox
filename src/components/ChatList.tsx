@@ -3,6 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Search, Plus } from "lucide-react";
 import OnlineStatus from "./OnlineStatus";
+import { getUsers } from "@/utils/api";
+import { useToast } from "./ui/use-toast";
 
 interface ChatListProps {
   onSelectChat: (chatId: string) => void;
@@ -18,27 +20,26 @@ interface User {
 const ChatList = ({ onSelectChat, selectedChat }: ChatListProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Récupérer tous les utilisateurs enregistrés du localStorage
-    const allUsers = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith("user_")) {
-        try {
-          const userData = JSON.parse(localStorage.getItem(key) || "");
-          allUsers.push(userData);
-        } catch (e) {
-          console.error("Erreur lors de la lecture des données utilisateur:", e);
-        }
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await getUsers();
+        const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+        const otherUsers = fetchedUsers.filter(user => user.id !== currentUser.id);
+        setUsers(otherUsers);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Impossible de charger les utilisateurs",
+        });
       }
-    }
-    
-    // Filtrer l'utilisateur actuel
-    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-    const otherUsers = allUsers.filter(user => user.id !== currentUser.id);
-    setUsers(otherUsers);
-  }, []);
+    };
+
+    fetchUsers();
+  }, [toast]);
 
   const filteredUsers = users.filter(user =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -66,31 +67,37 @@ const ChatList = ({ onSelectChat, selectedChat }: ChatListProps) => {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {filteredUsers.map((user) => (
-          <div
-            key={user.id}
-            onClick={() => onSelectChat(user.id)}
-            className={`p-4 flex items-center gap-3 hover:bg-accent cursor-pointer transition-colors ${
-              selectedChat === user.id ? "bg-accent" : ""
-            }`}
-          >
-            <div className="relative">
-              <Avatar>
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <OnlineStatus online={false} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex justify-between items-baseline">
-                <h3 className="font-medium truncate">{user.username}</h3>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-muted-foreground truncate">{user.name}</p>
-              </div>
-            </div>
+        {filteredUsers.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            Aucun utilisateur trouvé
           </div>
-        ))}
+        ) : (
+          filteredUsers.map((user) => (
+            <div
+              key={user.id}
+              onClick={() => onSelectChat(user.id)}
+              className={`p-4 flex items-center gap-3 hover:bg-accent cursor-pointer transition-colors ${
+                selectedChat === user.id ? "bg-accent" : ""
+              }`}
+            >
+              <div className="relative">
+                <Avatar>
+                  <AvatarImage src="/placeholder.svg" />
+                  <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <OnlineStatus online={false} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-baseline">
+                  <h3 className="font-medium truncate">{user.username}</h3>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-muted-foreground truncate">{user.name}</p>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

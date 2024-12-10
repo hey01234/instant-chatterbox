@@ -57,7 +57,7 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
     const newUser = {
       id: userId,
       username: formData.username,
-      name: "Jack",
+      name: formData.username,
       phone: "",
       description: "",
     };
@@ -77,7 +77,7 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 p-8">
+    <div className="w-full max-w-md space-y-8 p-8 bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm rounded-lg shadow-lg">
       <div className="flex flex-col items-center gap-4">
         <div className="rounded-full bg-primary/10 p-4">
           <MessageSquare className="h-12 w-12 text-primary" />
@@ -90,47 +90,44 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Input
-              id="username"
-              placeholder="Identifiant"
-              type="text"
-              value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Input
-              id="password"
-              placeholder="Mot de passe"
-              type="password"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Input
-              id="confirmPassword"
-              placeholder="Confirmer le mot de passe"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={(e) =>
-                setFormData({ ...formData, confirmPassword: e.target.value })
-              }
-              required
-            />
-          </div>
+          <Input
+            id="username"
+            placeholder="Identifiant"
+            type="text"
+            value={formData.username}
+            onChange={(e) =>
+              setFormData({ ...formData, username: e.target.value })
+            }
+            required
+            className="bg-background/50 border-input"
+          />
+          <Input
+            id="password"
+            placeholder="Mot de passe"
+            type="password"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+            required
+            className="bg-background/50 border-input"
+          />
+          <Input
+            id="confirmPassword"
+            placeholder="Confirmer le mot de passe"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={(e) =>
+              setFormData({ ...formData, confirmPassword: e.target.value })
+            }
+            required
+            className="bg-background/50 border-input"
+          />
         </div>
 
         <Button
           type="submit"
-          className="w-full"
+          className="w-full bg-primary hover:bg-primary/90"
           disabled={isLoading}
         >
           {isLoading ? "Inscription en cours..." : "S'inscrire"}
@@ -140,7 +137,7 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Vous avez déjà un compte ?{" "}
-          <Button variant="link" className="p-0" onClick={onToggle}>
+          <Button variant="link" className="p-0 text-primary" onClick={onToggle}>
             Se connecter
           </Button>
         </p>

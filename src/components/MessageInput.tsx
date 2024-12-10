@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 
 interface MessageInputProps {
   onSendMessage: (text: string) => void;
+  receiverId?: string;
 }
 
 const MessageInput = ({ onSendMessage }: MessageInputProps) => {
@@ -18,14 +19,13 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center gap-2">
+    <form onSubmit={handleSubmit} className="p-4 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky bottom-0">
+      <div className="flex items-center gap-2 max-w-[800px] mx-auto">
         <Button 
           type="button" 
           variant="ghost" 
           size="icon"
-          className="text-muted-foreground hover:text-foreground"
-          onClick={() => console.log("Attach file")}
+          className="text-muted-foreground hover:text-foreground hidden md:flex"
         >
           <Paperclip className="h-5 w-5" />
         </Button>
@@ -40,8 +40,7 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
           type="button"
           variant="ghost" 
           size="icon"
-          className="text-muted-foreground hover:text-foreground"
-          onClick={() => console.log("Open emoji picker")}
+          className="text-muted-foreground hover:text-foreground hidden md:flex"
         >
           <Smile className="h-5 w-5" />
         </Button>
