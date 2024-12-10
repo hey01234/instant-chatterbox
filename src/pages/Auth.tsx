@@ -16,33 +16,49 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  e.preventDefault();
+  setIsLoading(true);
 
-    // Simuler une vérification d'authentification
-    setTimeout(() => {
-      if (formData.identifier && formData.password) {
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("user", JSON.stringify({
-          id: "1",
-          username: formData.identifier,
-        
-        }));
-        navigate("/");
-        toast({
-          title: "Connexion réussie",
-          description: "Bienvenue sur l'application",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Erreur de connexion",
-          description: "Identifiant ou mot de passe incorrect",
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
-  };
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: formData.identifier, // Django attend "username"
+        password: formData.password,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/");
+      toast({
+        title: "Connexion réussie",
+        description: `Bienvenue, ${formData.identifier}`,
+      });
+    } else {
+      const errorData = await response.json();
+      toast({
+        variant: "destructive",
+        title: "Erreur de connexion",
+        description: errorData.error || "Identifiant ou mot de passe incorrect",
+      });
+    }
+  } catch (err) {
+    toast({
+      variant: "destructive",
+      title: "Erreur",
+      description: "Impossible de se connecter au serveur",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="w-full max-w-md space-y-8 p-8">
