@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
+import { Separator } from "@/components/ui/separator";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,13 +15,26 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Bell, Moon, Sun, Shield, Smartphone, Volume2, Languages, Trash2 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import {
+  Bell,
+  Moon,
+  Sun,
+  Shield,
+  Smartphone,
+  Volume2,
+  Languages,
+  Trash2,
+} from "lucide-react";
+import { SettingsHeader } from "@/components/settings/SettingsHeader";
+import { SettingsSection } from "@/components/settings/SettingsSection";
+import { SettingsCard } from "@/components/settings/SettingsCard";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isDarkMode, setIsDarkMode] = useState(document.documentElement.classList.contains("dark"));
+  const [isDarkMode, setIsDarkMode] = useState(
+    document.documentElement.classList.contains("dark")
+  );
   const [notifications, setNotifications] = useState(true);
   const [sound, setSound] = useState(true);
   const [language, setLanguage] = useState("Français");
@@ -44,7 +57,6 @@ const Settings = () => {
       localStorage.removeItem("user");
       localStorage.removeItem("isAuthenticated");
       
-      // Supprimer les conversations associées
       const keys = Object.keys(localStorage);
       keys.forEach(key => {
         if (key.includes(`chat_${id}_`) || key.includes(`_${id}`)) {
@@ -70,64 +82,45 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container max-w-2xl mx-auto p-6">
-        <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => navigate(-1)}
-            className="hover:bg-accent"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
-        </div>
+      <div className="container max-w-2xl mx-auto p-4 md:p-6 space-y-6">
+        <SettingsHeader />
 
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Apparence</h2>
-            <div className="flex items-center justify-between p-4 bg-card rounded-lg shadow-sm border border-border">
-              <div className="flex items-center gap-3">
-                {isDarkMode ? <Moon className="h-5 w-5 text-foreground" /> : <Sun className="h-5 w-5 text-foreground" />}
-                <span className="text-foreground">Thème {isDarkMode ? "sombre" : "clair"}</span>
+        <div className="space-y-8">
+          <SettingsSection title="Apparence">
+            <SettingsCard icon={isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />} title="Thème">
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-sm text-muted-foreground">
+                  Thème {isDarkMode ? "sombre" : "clair"}
+                </span>
+                <Switch checked={isDarkMode} onCheckedChange={toggleTheme} />
               </div>
-              <Switch checked={isDarkMode} onCheckedChange={toggleTheme} />
-            </div>
-          </div>
+            </SettingsCard>
+          </SettingsSection>
 
-          <Separator className="bg-border" />
+          <Separator className="bg-border/50" />
 
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Notifications</h2>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-card rounded-lg shadow-sm border border-border">
-                <div className="flex items-center gap-3">
-                  <Bell className="h-5 w-5 text-foreground" />
-                  <span className="text-foreground">Notifications push</span>
-                </div>
+          <SettingsSection title="Notifications">
+            <SettingsCard icon={<Bell className="h-5 w-5" />} title="Notifications push">
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-sm text-muted-foreground">Activer les notifications</span>
                 <Switch checked={notifications} onCheckedChange={setNotifications} />
               </div>
-              <div className="flex items-center justify-between p-4 bg-card rounded-lg shadow-sm border border-border">
-                <div className="flex items-center gap-3">
-                  <Volume2 className="h-5 w-5 text-foreground" />
-                  <span className="text-foreground">Sons</span>
-                </div>
+            </SettingsCard>
+            
+            <SettingsCard icon={<Volume2 className="h-5 w-5" />} title="Sons">
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-sm text-muted-foreground">Activer les sons</span>
                 <Switch checked={sound} onCheckedChange={setSound} />
               </div>
-            </div>
-          </div>
+            </SettingsCard>
+          </SettingsSection>
 
-          <Separator className="bg-border" />
+          <Separator className="bg-border/50" />
 
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Langue et région</h2>
-            <div className="p-4 bg-card rounded-lg shadow-sm border border-border">
-              <div className="flex items-center gap-3 mb-2">
-                <Languages className="h-5 w-5 text-foreground" />
-                <span className="text-foreground">Langue de l'application</span>
-              </div>
+          <SettingsSection title="Langue et région">
+            <SettingsCard icon={<Languages className="h-5 w-5" />} title="Langue de l'application">
               <select 
-                className="w-full mt-2 p-2 rounded-md border border-border bg-background text-foreground"
+                className="w-full mt-2 p-2 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
@@ -135,47 +128,34 @@ const Settings = () => {
                 <option value="English">English</option>
                 <option value="Español">Español</option>
               </select>
-            </div>
-          </div>
+            </SettingsCard>
+          </SettingsSection>
 
-          <Separator className="bg-border" />
+          <Separator className="bg-border/50" />
 
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Sécurité</h2>
-            <div className="p-4 bg-card rounded-lg shadow-sm border border-border">
-              <div className="flex items-center gap-3">
-                <Shield className="h-5 w-5 text-foreground" />
-                <span className="text-foreground">Authentification à deux facteurs</span>
-              </div>
-              <Button variant="outline" className="mt-4">
+          <SettingsSection title="Sécurité">
+            <SettingsCard icon={<Shield className="h-5 w-5" />} title="Authentification à deux facteurs">
+              <Button variant="outline" className="mt-2 w-full md:w-auto">
                 Configurer
               </Button>
-            </div>
-          </div>
+            </SettingsCard>
+          </SettingsSection>
 
-          <Separator className="bg-border" />
+          <Separator className="bg-border/50" />
 
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">Appareils connectés</h2>
-            <div className="p-4 bg-card rounded-lg shadow-sm border border-border">
-              <div className="flex items-center gap-3">
-                <Smartphone className="h-5 w-5 text-foreground" />
-                <div>
-                  <p className="font-medium text-foreground">iPhone 13</p>
-                  <p className="text-sm text-muted-foreground">Dernière connexion: Aujourd'hui</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SettingsSection title="Appareils connectés">
+            <SettingsCard icon={<Smartphone className="h-5 w-5" />} title="iPhone 13">
+              <p className="text-sm text-muted-foreground mt-1">Dernière connexion: Aujourd'hui</p>
+            </SettingsCard>
+          </SettingsSection>
 
-          <Separator className="bg-border" />
+          <Separator className="bg-border/50" />
 
-          <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-destructive">Zone de danger</h2>
+          <SettingsSection title="Zone de danger" className="pb-6">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="w-full">
-                  <Trash2 className="mr-2 h-4 w-4" />
+                <Button variant="destructive" className="w-full group">
+                  <Trash2 className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
                   Supprimer mon compte
                 </Button>
               </AlertDialogTrigger>
@@ -194,10 +174,10 @@ const Settings = () => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
+          </SettingsSection>
 
-          <div className="pt-6">
-            <Button onClick={handleSave} className="w-full">
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t border-border md:relative md:border-0 md:bg-transparent md:backdrop-blur-none">
+            <Button onClick={handleSave} className="w-full md:w-auto">
               Sauvegarder les modifications
             </Button>
           </div>
