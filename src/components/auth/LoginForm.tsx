@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { MessageSquare } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { loginUser } from "@/utils/api";
 
 const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   const navigate = useNavigate();
@@ -18,42 +19,29 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Vérifier si l'utilisateur existe
-    const users = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith("user_")) {
-        try {
-          const userData = JSON.parse(localStorage.getItem(key) || "");
-          users.push(userData);
-        } catch (e) {
-          console.error("Erreur lors de la lecture des données utilisateur:", e);
-        }
-      }
-    }
+    try {
+      const response = await loginUser({
+        username: formData.identifier,
+        password: formData.password,
+      });
 
-    const user = users.find(u => u.username === formData.identifier);
-    
-    if (!user) {
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("user", JSON.stringify(response));
+      
+      navigate("/");
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur l'application",
+      });
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Erreur de connexion",
-        description: "Aucun compte trouvé avec cet identifiant",
+        description: "Identifiant ou mot de passe incorrect",
       });
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("user", JSON.stringify(user));
-    
-    toast({
-      title: "Connexion réussie",
-      description: "Bienvenue sur l'application",
-    });
-    
-    navigate("/");
-    setIsLoading(false);
   };
 
   return (
@@ -62,7 +50,7 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
         <div className="rounded-full bg-primary/10 p-4">
           <MessageSquare className="h-12 w-12 text-primary" />
         </div>
-        <h2 className="text-3xl font-bold text-foreground">Bienvenue</h2>
+        <h2 className="text-3xl font-bold">Bienvenue</h2>
         <p className="text-muted-foreground">
           Connectez-vous pour accéder à votre compte
         </p>
@@ -72,14 +60,13 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
         <div className="space-y-4">
           <Input
             id="identifier"
-            placeholder="Identifiant"
+            placeholder="Email ou identifiant"
             type="text"
             value={formData.identifier}
             onChange={(e) =>
               setFormData({ ...formData, identifier: e.target.value })
             }
             required
-            className="bg-background/50 border-input"
           />
           <Input
             id="password"
@@ -90,13 +77,12 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
               setFormData({ ...formData, password: e.target.value })
             }
             required
-            className="bg-background/50 border-input"
           />
         </div>
 
         <Button
           type="submit"
-          className="w-full bg-primary hover:bg-primary/90"
+          className="w-full"
           disabled={isLoading}
         >
           {isLoading ? "Connexion en cours..." : "Se connecter"}
@@ -106,7 +92,7 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Vous n'avez pas de compte ?{" "}
-          <Button variant="link" className="p-0 text-primary" onClick={onToggle}>
+          <Button variant="link" className="p-0" onClick={onToggle}>
             S'inscrire
           </Button>
         </p>

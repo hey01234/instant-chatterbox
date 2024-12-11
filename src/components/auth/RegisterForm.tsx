@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { MessageSquare } from "lucide-react";
+import { registerUser } from "@/utils/api";
 
 const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
   const { toast } = useToast();
@@ -27,53 +28,30 @@ const RegisterForm = ({ onToggle }: { onToggle: () => void }) => {
       return;
     }
 
-    // Vérifier si l'utilisateur existe déjà
-    const existingUsers = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith("user_")) {
-        try {
-          const userData = JSON.parse(localStorage.getItem(key) || "");
-          existingUsers.push(userData);
-        } catch (e) {
-          console.error("Erreur lors de la lecture des données utilisateur:", e);
-        }
-      }
-    }
+    try {
+      const response = await registerUser({
+        username: formData.username,
+        password: formData.password,
+      });
 
-    const userExists = existingUsers.some(user => user.username === formData.username);
-    if (userExists) {
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("user", JSON.stringify(response));
+      
+      toast({
+        title: "Inscription réussie",
+        description: "Bienvenue sur l'application",
+      });
+      
+      window.location.href = "/";
+    } catch (error) {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Cet identifiant est déjà utilisé",
+        description: "Une erreur est survenue lors de l'inscription",
       });
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    // Créer un nouvel utilisateur
-    const userId = `${Date.now()}`;
-    const newUser = {
-      id: userId,
-      username: formData.username,
-      name: formData.username,
-      phone: "",
-      description: "",
-    };
-
-    // Sauvegarder l'utilisateur
-    localStorage.setItem(`user_${userId}`, JSON.stringify(newUser));
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("user", JSON.stringify(newUser));
-      
-    toast({
-      title: "Inscription réussie",
-      description: "Bienvenue sur l'application",
-    });
-      
-    window.location.href = "/";
-    setIsLoading(false);
   };
 
   return (

@@ -20,7 +20,7 @@ const headers = {
 };
 
 export const registerUser = async (userData: { username: string; password: string }) => {
-  const response = await fetch(`${API_URL}register`, {
+  const response = await fetch(`${API_URL}/register`, {
     method: 'POST',
     headers,
     credentials: 'include',
@@ -35,7 +35,7 @@ export const registerUser = async (userData: { username: string; password: strin
 };
 
 export const loginUser = async (credentials: { username: string; password: string }) => {
-  const response = await fetch(`${API_URL}login`, {
+  const response = await fetch(`${API_URL}/login`, {
     method: 'POST',
     headers,
     credentials: 'include',
@@ -50,7 +50,7 @@ export const loginUser = async (credentials: { username: string; password: strin
 };
 
 export const getUsers = async () => {
-  const response = await fetch(`${API_URL}users`, {
+  const response = await fetch(`${API_URL}/users`, {
     headers,
     credentials: 'include',
   });
@@ -63,7 +63,7 @@ export const getUsers = async () => {
 };
 
 export const sendMessage = async (message: { receiverId: string; text: string }) => {
-  const response = await fetch(`${API_URL}messages`, {
+  const response = await fetch(`${API_URL}/messages`, {
     method: 'POST',
     headers,
     credentials: 'include',
@@ -78,7 +78,7 @@ export const sendMessage = async (message: { receiverId: string; text: string })
 };
 
 export const getMessages = async (receiverId: string) => {
-  const response = await fetch(`${API_URL}messages/${receiverId}`, {
+  const response = await fetch(`${API_URL}/messages/${receiverId}`, {
     headers,
     credentials: 'include',
   });
