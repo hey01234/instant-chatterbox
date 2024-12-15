@@ -32,12 +32,12 @@ import { SettingsCard } from "@/components/settings/SettingsCard";
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isDarkMode, setIsDarkMode] = useState(
-    document.documentElement.classList.contains("dark")
-  );
   const [notifications, setNotifications] = useState(true);
   const [sound, setSound] = useState(true);
   const [language, setLanguage] = useState("Français");
+  const [isDarkMode, setIsDarkMode] = useState(
+    document.documentElement.classList.contains("dark")
+  );
 
   const toggleTheme = () => {
     document.documentElement.classList.toggle("dark");
@@ -81,7 +81,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background overflow-y-auto">
+    <div className="h-full w-full overflow-y-auto bg-background">
       <div className="container max-w-2xl mx-auto p-4 md:p-6 space-y-6 pb-24 md:pb-6">
         <SettingsHeader />
 
