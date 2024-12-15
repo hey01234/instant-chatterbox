@@ -1,10 +1,8 @@
-import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
-import { MessageSquare } from "lucide-react";
 import RegisterForm from "@/components/auth/RegisterForm";
 
 const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
@@ -46,10 +44,14 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 p-8">
+    <div className="w-full max-w-md space-y-8 p-8 bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm rounded-lg shadow-lg">
       <div className="flex flex-col items-center gap-4">
         <div className="rounded-full bg-primary/10 p-4">
-          <MessageSquare className="h-12 w-12 text-primary" />
+          <img 
+            src="/lovable-uploads/283a273b-d013-414a-96a8-cf46bce6668a.png" 
+            alt="Cerco Messenger" 
+            className="h-12 w-12"
+          />
         </div>
         <h2 className="text-3xl font-bold">Bienvenue</h2>
         <p className="text-muted-foreground">
