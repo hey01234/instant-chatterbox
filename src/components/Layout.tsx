@@ -22,6 +22,7 @@ import {
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains("dark")
   );
@@ -37,6 +38,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     navigate("/auth");
   };
 
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
+  };
+
   const NavContent = () => (
     <>
       <div className="p-4">
@@ -46,7 +52,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             alt="Cerco Messenger" 
             className="h-8 w-auto"
           />
-          <h1 className="text-xl font-bold hidden md:block">Cerco Messenger</h1>
+          <h1 className="text-xl font-bold">Cerco Messenger</h1>
         </div>
       </div>
       
@@ -54,46 +60,46 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <Button
           variant="ghost"
           className="w-full justify-start gap-2 hover:bg-accent"
-          onClick={() => navigate("/")}
+          onClick={() => handleNavigation("/")}
         >
           <MessageSquare className="h-5 w-5" />
-          <span className="hidden md:inline">Messages</span>
+          <span>Messages</span>
         </Button>
 
         <Button
           variant="ghost"
           className="w-full justify-start gap-2 hover:bg-accent"
-          onClick={() => navigate("/contacts")}
+          onClick={() => handleNavigation("/contacts")}
         >
           <Users className="h-5 w-5" />
-          <span className="hidden md:inline">Contacts</span>
+          <span>Contacts</span>
         </Button>
 
         <Button
           variant="ghost"
           className="w-full justify-start gap-2 hover:bg-accent"
-          onClick={() => navigate("/saved-messages")}
+          onClick={() => handleNavigation("/saved-messages")}
         >
           <Bookmark className="h-5 w-5" />
-          <span className="hidden md:inline">Messages enregistrés</span>
+          <span>Messages enregistrés</span>
         </Button>
 
         <Button
           variant="ghost"
           className="w-full justify-start gap-2 hover:bg-accent"
-          onClick={() => navigate("/profile")}
+          onClick={() => handleNavigation("/profile")}
         >
           <UserCircle className="h-5 w-5" />
-          <span className="hidden md:inline">Profil</span>
+          <span>Profil</span>
         </Button>
 
         <Button
           variant="ghost"
           className="w-full justify-start gap-2 hover:bg-accent"
-          onClick={() => navigate("/settings")}
+          onClick={() => handleNavigation("/settings")}
         >
           <Settings className="h-5 w-5" />
-          <span className="hidden md:inline">Paramètres</span>
+          <span>Paramètres</span>
         </Button>
 
         <Button
@@ -104,12 +110,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {isDarkMode ? (
             <>
               <Sun className="h-5 w-5" />
-              <span className="hidden md:inline">Thème clair</span>
+              <span>Thème clair</span>
             </>
           ) : (
             <>
               <Moon className="h-5 w-5" />
-              <span className="hidden md:inline">Thème sombre</span>
+              <span>Thème sombre</span>
             </>
           )}
         </Button>
@@ -122,7 +128,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           onClick={handleLogout}
         >
           <LogOut className="h-5 w-5" />
-          <span className="hidden md:inline">Déconnexion</span>
+          <span>Déconnexion</span>
         </Button>
       </div>
     </>
@@ -132,7 +138,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <div className="flex h-screen bg-background">
       {isMobile ? (
         <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border h-16 px-4 flex items-center justify-between">
-          <Sheet>
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Menu className="h-5 w-5" />
@@ -147,7 +153,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             alt="Cerco Messenger" 
             className="h-8 w-auto"
           />
-          <div className="w-10" /> {/* Spacer pour centrer le logo */}
+          <div className="w-10" />
         </div>
       ) : (
         <div className="w-16 md:w-64 h-full bg-card border-r border-border flex flex-col">
