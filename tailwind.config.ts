@@ -25,7 +25,7 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "#0EA5E9", // Telegram-like blue
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -41,7 +41,7 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "#F0F2F5", // WhatsApp-like accent color
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
@@ -53,11 +53,11 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         chat: {
-          sent: "#E5DEFF",
-          received: "#F6F6F7",
+          sent: "#E3F2FD", // Telegram-like sent message
+          received: "#F5F5F5", // WhatsApp-like received message
         },
-        online: "#22C55E",
-        offline: "#94A3B8",
+        online: "#4CAF50", // WhatsApp-like online status
+        offline: "#9E9E9E",
       },
       keyframes: {
         "message-in": {

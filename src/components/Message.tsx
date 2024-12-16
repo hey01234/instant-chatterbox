@@ -18,15 +18,13 @@ const Message = ({ id, text, sent, timestamp, onDelete, onReact }: MessageProps)
     <div className={`flex ${sent ? "justify-end" : "justify-start"} group mb-4`}>
       <div className="relative max-w-[80%]">
         <div
-          className={`p-3 rounded-2xl animate-message-in shadow-sm ${
-            sent ? "bg-chat-sent" : "bg-chat-received"
-          }`}
+          className={`message-bubble ${sent ? "message-sent" : "message-received"} animate-message-in`}
           onMouseEnter={() => setShowActions(true)}
           onMouseLeave={() => setShowActions(false)}
         >
-          <p className="text-sm break-words">{text}</p>
+          <p className="text-sm">{text}</p>
           <span className="text-xs text-muted-foreground mt-1 block">
-            {new Date(timestamp).toLocaleTimeString()}
+            {new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
           
           {showActions && sent && (
