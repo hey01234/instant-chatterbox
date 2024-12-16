@@ -5,6 +5,12 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { Separator } from "@/components/ui/separator";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -24,6 +30,7 @@ import {
   Volume2,
   Languages,
   Trash2,
+  Info,
 } from "lucide-react";
 import { SettingsHeader } from "@/components/settings/SettingsHeader";
 import { SettingsSection } from "@/components/settings/SettingsSection";
@@ -86,41 +93,82 @@ const Settings = () => {
         <SettingsHeader />
 
         <div className="space-y-8">
-          <SettingsSection title="Apparence">
-            <SettingsCard icon={isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />} title="Thème">
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-muted-foreground">
+          <SettingsSection title="Apparence" className="animate-fade-in">
+            <SettingsCard 
+              icon={isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />} 
+              title="Thème"
+            >
+              <div className="flex items-center justify-between mt-2 group">
+                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                   Thème {isDarkMode ? "sombre" : "clair"}
                 </span>
-                <Switch checked={isDarkMode} onCheckedChange={toggleTheme} />
+                <Switch 
+                  checked={isDarkMode} 
+                  onCheckedChange={toggleTheme}
+                  className="transition-transform hover:scale-105"
+                />
               </div>
             </SettingsCard>
           </SettingsSection>
 
           <Separator className="bg-border/50" />
 
-          <SettingsSection title="Notifications">
-            <SettingsCard icon={<Bell className="h-5 w-5" />} title="Notifications push">
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-muted-foreground">Activer les notifications</span>
-                <Switch checked={notifications} onCheckedChange={setNotifications} />
-              </div>
-            </SettingsCard>
-            
-            <SettingsCard icon={<Volume2 className="h-5 w-5" />} title="Sons">
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-sm text-muted-foreground">Activer les sons</span>
-                <Switch checked={sound} onCheckedChange={setSound} />
-              </div>
-            </SettingsCard>
+          <SettingsSection title="Notifications" className="animate-fade-in delay-100">
+            <TooltipProvider>
+              <SettingsCard icon={<Bell className="h-5 w-5" />} title="Notifications push">
+                <div className="flex items-center justify-between mt-2 group">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                      Activer les notifications
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Recevez des notifications pour les nouveaux messages
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <Switch 
+                    checked={notifications} 
+                    onCheckedChange={setNotifications}
+                    className="transition-transform hover:scale-105"
+                  />
+                </div>
+              </SettingsCard>
+              
+              <SettingsCard icon={<Volume2 className="h-5 w-5" />} title="Sons">
+                <div className="flex items-center justify-between mt-2 group">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                      Activer les sons
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Sons de notification et effets sonores
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <Switch 
+                    checked={sound} 
+                    onCheckedChange={setSound}
+                    className="transition-transform hover:scale-105"
+                  />
+                </div>
+              </SettingsCard>
+            </TooltipProvider>
           </SettingsSection>
 
           <Separator className="bg-border/50" />
 
-          <SettingsSection title="Langue et région">
+          <SettingsSection title="Langue et région" className="animate-fade-in delay-200">
             <SettingsCard icon={<Languages className="h-5 w-5" />} title="Langue de l'application">
               <select 
-                className="w-full mt-2 p-2 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full mt-2 p-2 rounded-md border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors hover:border-primary"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
@@ -133,9 +181,12 @@ const Settings = () => {
 
           <Separator className="bg-border/50" />
 
-          <SettingsSection title="Sécurité">
+          <SettingsSection title="Sécurité" className="animate-fade-in delay-300">
             <SettingsCard icon={<Shield className="h-5 w-5" />} title="Authentification à deux facteurs">
-              <Button variant="outline" className="mt-2 w-full md:w-auto">
+              <Button 
+                variant="outline" 
+                className="mt-2 w-full md:w-auto transition-all hover:scale-105 hover:bg-primary hover:text-primary-foreground"
+              >
                 Configurer
               </Button>
             </SettingsCard>
@@ -143,23 +194,31 @@ const Settings = () => {
 
           <Separator className="bg-border/50" />
 
-          <SettingsSection title="Appareils connectés">
-            <SettingsCard icon={<Smartphone className="h-5 w-5" />} title="iPhone 13">
-              <p className="text-sm text-muted-foreground mt-1">Dernière connexion: Aujourd'hui</p>
+          <SettingsSection title="Appareils connectés" className="animate-fade-in delay-400">
+            <SettingsCard 
+              icon={<Smartphone className="h-5 w-5" />} 
+              title="iPhone 13"
+            >
+              <p className="text-sm text-muted-foreground mt-1 group-hover:text-foreground transition-colors">
+                Dernière connexion: Aujourd'hui
+              </p>
             </SettingsCard>
           </SettingsSection>
 
           <Separator className="bg-border/50" />
 
-          <SettingsSection title="Zone de danger" className="pb-6">
+          <SettingsSection title="Zone de danger" className="pb-6 animate-fade-in delay-500">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="w-full group">
+                <Button 
+                  variant="destructive" 
+                  className="w-full group hover:bg-destructive/90 transition-all duration-300"
+                >
                   <Trash2 className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
                   Supprimer mon compte
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="animate-scale-in">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer votre compte ?</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -168,7 +227,10 @@ const Settings = () => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Annuler</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteAccount} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  <AlertDialogAction 
+                    onClick={handleDeleteAccount} 
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                  >
                     Supprimer
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -176,8 +238,11 @@ const Settings = () => {
             </AlertDialog>
           </SettingsSection>
 
-          <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t border-border md:relative md:border-0 md:bg-transparent md:backdrop-blur-none">
-            <Button onClick={handleSave} className="w-full md:w-auto">
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t border-border md:relative md:border-0 md:bg-transparent md:backdrop-blur-none animate-fade-in">
+            <Button 
+              onClick={handleSave} 
+              className="w-full md:w-auto bg-gradient-to-r from-primary/80 to-primary hover:opacity-90 transition-all hover:scale-[1.02]"
+            >
               Sauvegarder les modifications
             </Button>
           </div>
