@@ -64,7 +64,7 @@ const LoginForm = ({ onToggle }: { onToggle: () => void }) => {
           <div className="space-y-2">
             <Input
               id="identifier"
-              placeholder="Email ou identifiant"
+              placeholder="Identifiant"
               type="text"
               value={formData.identifier}
               onChange={(e) =>
