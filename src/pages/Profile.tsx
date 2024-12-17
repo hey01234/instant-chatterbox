@@ -1,6 +1,6 @@
 import { Edit2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
@@ -23,6 +23,7 @@ const Profile = () => {
   const [editedProfile, setEditedProfile] = useState<Partial<UserProfile>>({});
   
   useEffect(() => {
+    // Récupérer les données du profil depuis le localStorage
     const userData = localStorage.getItem("user");
     if (userData) {
       const user = JSON.parse(userData);
