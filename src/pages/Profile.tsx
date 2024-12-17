@@ -1,7 +1,6 @@
 import { Edit2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
@@ -18,7 +17,6 @@ interface UserProfile {
 }
 
 const Profile = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,6 +37,15 @@ const Profile = () => {
   }, []);
 
   const handleAvatarChange = (file: File) => {
+    if (!isEditing) {
+      toast({
+        title: "Mode édition requis",
+        description: "Veuillez activer le mode édition pour modifier votre photo de profil",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setProfile(prev => prev ? { ...prev, avatar: reader.result as string } : null);
@@ -55,6 +62,15 @@ const Profile = () => {
   };
 
   const handleAvatarRemove = () => {
+    if (!isEditing) {
+      toast({
+        title: "Mode édition requis",
+        description: "Veuillez activer le mode édition pour supprimer votre photo de profil",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setProfile(prev => prev ? { ...prev, avatar: undefined } : null);
     localStorage.setItem("user", JSON.stringify({ 
       ...profile, 
@@ -116,6 +132,7 @@ const Profile = () => {
           name={profile.name}
           onAvatarChange={handleAvatarChange}
           onAvatarRemove={handleAvatarRemove}
+          isEditing={isEditing}
         />
         
         <div className="mt-8 space-y-6">
