@@ -108,10 +108,10 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <ProfileHeader />
 
-      <div className="px-6 pb-6 max-w-2xl mx-auto">
+      <div className="flex-1 overflow-y-auto px-6 pb-6 max-w-2xl mx-auto w-full">
         <div className="flex justify-end mt-4">
           <Button 
             variant="ghost" 
