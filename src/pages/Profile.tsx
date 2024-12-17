@@ -1,10 +1,10 @@
-import { Edit2, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Edit2, X } from "lucide-react";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserProfile {
   id: string;
@@ -35,6 +35,26 @@ const Profile = () => {
       });
     }
   }, []);
+
+  const handleEditChange = (field: string, value: string) => {
+    setEditedProfile(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    if (!profile) return;
+    
+    const updatedProfile = { ...profile, ...editedProfile };
+    setProfile(updatedProfile);
+    localStorage.setItem("user", JSON.stringify(updatedProfile));
+    
+    toast({
+      title: "Profil mis à jour",
+      description: "Vos modifications ont été enregistrées avec succès",
+    });
+    
+    setIsEditing(false);
+    setEditedProfile({});
+  };
 
   const handleAvatarChange = (file: File) => {
     if (!isEditing) {
@@ -82,36 +102,16 @@ const Profile = () => {
     });
   };
 
-  const handleEditChange = (field: string, value: string) => {
-    setEditedProfile(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = () => {
-    if (!profile) return;
-    
-    const updatedProfile = { ...profile, ...editedProfile };
-    setProfile(updatedProfile);
-    localStorage.setItem("user", JSON.stringify(updatedProfile));
-    
-    toast({
-      title: "Profil mis à jour",
-      description: "Vos modifications ont été enregistrées avec succès",
-    });
-    
-    setIsEditing(false);
-    setEditedProfile({});
-  };
-
   if (!profile) {
     return <div>Chargement...</div>;
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
+    <div className="h-screen flex flex-col bg-background">
       <ProfileHeader />
-
+      
       <div className="flex-1 overflow-y-auto">
-        <div className="px-6 pb-6 max-w-2xl mx-auto w-full">
+        <div className="px-6 pb-20 max-w-2xl mx-auto w-full">
           <div className="flex justify-end mt-4">
             <Button 
               variant="ghost" 
