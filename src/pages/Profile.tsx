@@ -23,7 +23,6 @@ const Profile = () => {
   const [editedProfile, setEditedProfile] = useState<Partial<UserProfile>>({});
   
   useEffect(() => {
-    // Récupérer les données du profil depuis le localStorage
     const userData = localStorage.getItem("user");
     if (userData) {
       const user = JSON.parse(userData);
@@ -108,55 +107,57 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       <ProfileHeader />
 
-      <div className="flex-1 overflow-y-auto px-6 pb-6 max-w-2xl mx-auto w-full">
-        <div className="flex justify-end mt-4">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="hover:bg-accent"
-            onClick={() => {
-              if (isEditing) {
-                setEditedProfile({});
-              }
-              setIsEditing(!isEditing);
-            }}
-          >
-            {isEditing ? <X className="h-6 w-6" /> : <Edit2 className="h-6 w-6" />}
-          </Button>
-        </div>
-
-        <ProfileAvatar 
-          avatar={profile.avatar}
-          name={profile.name}
-          onAvatarChange={handleAvatarChange}
-          onAvatarRemove={handleAvatarRemove}
-          isEditing={isEditing}
-        />
-        
-        <div className="mt-8 space-y-6">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground">
-              {profile.name}
-            </h1>
-            <p className="text-primary mt-1">
-              @{profile.username}
-            </p>
+      <div className="flex-1 overflow-y-auto">
+        <div className="px-6 pb-6 max-w-2xl mx-auto w-full">
+          <div className="flex justify-end mt-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="hover:bg-accent"
+              onClick={() => {
+                if (isEditing) {
+                  setEditedProfile({});
+                }
+                setIsEditing(!isEditing);
+              }}
+            >
+              {isEditing ? <X className="h-6 w-6" /> : <Edit2 className="h-6 w-6" />}
+            </Button>
           </div>
 
-          <ProfileForm 
+          <ProfileAvatar 
+            avatar={profile.avatar}
+            name={profile.name}
+            onAvatarChange={handleAvatarChange}
+            onAvatarRemove={handleAvatarRemove}
             isEditing={isEditing}
-            profile={profile}
-            editedProfile={editedProfile}
-            onEditChange={handleEditChange}
-            onSave={handleSave}
-            onCancel={() => {
-              setIsEditing(false);
-              setEditedProfile({});
-            }}
           />
+          
+          <div className="mt-8 space-y-6">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-foreground">
+                {profile.name}
+              </h1>
+              <p className="text-primary mt-1">
+                @{profile.username}
+              </p>
+            </div>
+
+            <ProfileForm 
+              isEditing={isEditing}
+              profile={profile}
+              editedProfile={editedProfile}
+              onEditChange={handleEditChange}
+              onSave={handleSave}
+              onCancel={() => {
+                setIsEditing(false);
+                setEditedProfile({});
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
